@@ -1,8 +1,18 @@
 const button = document.getElementById('icon');
-const mongoose = require('mongoose');
-const Todo = require('../models/todo');
-const express = require('express');
 
-async function fn() {
-    await Todo.deleteElementById(button.value);
+function fn() {
+    console.log(button.value);
+    fetch(`/todo/${button.value}`, {
+        method: "POST",
+        body: JSON.stringify({
+            name: "Deska",
+            email: "deska@gmail.com",
+            phone: "342234553"
+        })
+    }).then(result => {
+        location.replace("/todo")
+    }).catch(err => {
+        // if any error occured, then catch it here
+        console.error(err);
+    });
 }
