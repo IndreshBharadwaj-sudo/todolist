@@ -56,10 +56,10 @@ app.route("/remove/:id").get((req, res) => {
 });
 
 //remove all todos
-app.post('/removeall', async(req, res) => {
+app.post("/removeall", async (req, res) => {
     await TodoTask.deleteMany({});
-    res.redirect('/');
-})
+    res.redirect("/");
+});
 
 //connection to db
 mongoose.set("useFindAndModify", false);
