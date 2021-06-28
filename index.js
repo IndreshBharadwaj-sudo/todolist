@@ -47,7 +47,7 @@ app.route("/edit/:id")
     });
 
 //remove a todo if exists
-app.del("/remove/:id").get((req, res) => {
+app.route("/remove/:id").get((req, res) => {
     const id = req.params.id;
     TodoTask.findByIdAndRemove(id, (err) => {
         if (err) return res.send(500, err);
@@ -56,10 +56,10 @@ app.del("/remove/:id").get((req, res) => {
 });
 
 //remove all todos
-app.post("/removeall", async (req, res) => {
+app.post('/removeall', async(req, res) => {
     await TodoTask.deleteMany({});
-    res.redirect("/");
-});
+    res.redirect('/');
+})
 
 //connection to db
 mongoose.set("useFindAndModify", false);
