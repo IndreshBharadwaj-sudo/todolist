@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Todo App</title>
+   <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+   <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+   <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+      <div class="container-fluid">
+         <a class="navbar-brand" href="/">Home</a>
+         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+         <span class="navbar-toggler-icon"></span>
+         </button>
+         <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+               <li class="nav-item">
+                  <a class="nav-link" href="/">Home</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">Login</a>
+               </li>
+               <li class="nav-item">
+                  <a class="nav-link" href="#">Register</a>
+               </li>
+            </ul>
+         </div>
+      </div>
+   </nav>
+   <div class="contains">
+      <% todoTasks.forEach(details => { %>
+      <% if (details._id == idTask) { %> 
+      <center>
+         <header>Edit</header>
+      </center>
+      <form action="/edit/<%= details._id %>" method="POST">
+         <div class="d-grid gap-2">
+            <input type="text" autofocus value="<%=details.content%>" class="w-100 form-control-lg" name="content">
+            <button class="w-100 btn btn-primary" type="submit">Confirm</button>
+            <button class="cancel w-100 btn btn-danger" href="/">Cancel</button>
+         </div>
+      </form>
+      <% } %>
+      <% }) %>           
+   </div>
+   <script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>

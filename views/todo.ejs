@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo App</title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="/static/css/style.css" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Home</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarColor01">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#">Home
+                        <span class="visually-hidden">(current)</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div class="contains">
+        <header>Todo App</header>
+        <form action="/" method="post" class="todoForm">
+            <input autofocus type="text" placeholder="Add your new todo" name="content" class="form-control">
+            <button type="submit"><i class="fas fa-plus"></i></button>
+        </form>        
+        </form>       
+        <% todoTasks.forEach(details => { %>    
+        <div class="w-100 toast show" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="toast-header">
+                <a href="/edit/<%= details._id %>" class="edit">
+                <button type="button" class="icon fas fa-edit ms-2 mb-1" >
+                <span aria-hidden="true"></span>
+                </button>
+                </a>
+                <center class="w-100">Added on <%= details.date.toLocaleDateString() %> </center>
+                <a href="/remove/<%= details._id %>" class="remove">
+                <button type="button" class="icon fas fa-trash ms-2 mb-1" data-bs-dismiss="toast" aria-label="Close">
+                </button>
+                </a>
+            </div>
+            <div class="toast-body">
+                <p>
+                    <%= details.content %> 
+                </p>
+            </div>
+        </div>
+        <hr/>
+        <% }) %>   
+        <div class="footer">
+            <span>You have <span class="pendingTasks"></span> pending tasks</span>
+            <form action="/removeall" method="post">
+                <button type="submit" >Clear All</button>
+            </form>
+        </div>
+    </div>
+    <script src="/static/js/bootstrap.bundle.min.js"></script>
+</body>
