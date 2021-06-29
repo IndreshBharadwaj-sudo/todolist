@@ -10,7 +10,7 @@ app.use("/static", express.static("public"));
 // to set e ejs as template engine
 app.set("view engine", "ejs");
 
-// to fetch a todo from the db
+// to fetch all todos from the db
 app.get("/", async (req, res) => {
     await TodoTask.find({}, (err, tasks) => {
         if (err) return res.status(500).send(err);
@@ -19,7 +19,7 @@ app.get("/", async (req, res) => {
 });
 
 //create a new todo
-app.post("/", async (req, res) => {
+app.post("/new", async (req, res) => {
     const todoTask = new TodoTask({
         content: req.body.content,
     });
