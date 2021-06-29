@@ -11,8 +11,9 @@ app.use("/static", express.static("public"));
 app.set("view engine", "ejs");
 
 // to fetch a todo from the db
-app.get("/", (req, res) => {
-    TodoTask.find({}, (err, tasks) => {
+app.get("/", async (req, res) => {
+    await TodoTask.find({}, (err, tasks) => {
+        if (err) return res.status(500).send(err);
         res.render("todo.ejs", { todoTasks: tasks });
     });
 });
@@ -26,24 +27,29 @@ app.post("/", async (req, res) => {
         await todoTask.save();
         res.redirect("/");
     } catch (err) {
+        return res.status(500).send(err);
         res.redirect("/");
     }
 });
 
 //update the existing todo
-app.route("/edit/:id").post((req, res) => {
+app.post("/edit/:id", async (req, res) => {
     const id = req.params.id;
-    TodoTask.findByIdAndUpdate(id, { content: req.body.content }, (err) => {
-        if (err) return res.send(500, err);
-        res.redirect("/");
-    });
+    await TodoTask.findByIdAndUpdate(
+        id,
+        { content: req.body.content },
+        (err) => {
+            if (err) return res.status(500).send(err);
+            res.redirect("/");
+        }
+    );
 });
 
 //remove a todo if exists
-app.route("/remove/:id").get((req, res) => {
+app.get("/remove/:id", async (req, res) => {
     const id = req.params.id;
-    TodoTask.findByIdAndRemove(id, (err) => {
-        if (err) return res.send(500, err);
+    await TodoTask.findByIdAndRemove(id, (err) => {
+        if (err) return res.status(500).send(err);
         res.redirect("/");
     });
 });
