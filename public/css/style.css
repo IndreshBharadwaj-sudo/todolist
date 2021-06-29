@@ -134,8 +134,7 @@ body {
     transition: all 0.3s ease;
 }
 
-.todoForm button:hover,
-.footer button:hover {
+.todoForm button:hover {
     background: #721ce3;
 }
 
@@ -185,22 +184,6 @@ body {
     margin-top: 20px;
     align-items: center;
     justify-content: space-between;
-}
-
-.footer button {
-    padding: 6px 10px;
-    border-radius: 3px;
-    border: none;
-    outline: none;
-    color: #fff;
-    font-weight: 400;
-    font-size: 16px;
-    margin-left: 5px;
-    background: #8e49e8;
-    cursor: pointer;
-    user-select: none;
-    opacity: 0.6;
-    transition: all 0.3s ease;
 }
 
 .footer button.active {
