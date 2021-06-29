@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="/static/css/style.css" type="text/css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
+
 <body>
     <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
@@ -16,20 +17,19 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <div class="navbar-nav">
-                    <a class="nav-link" href="#">Home</a>
+                    <a class="nav-link" href="/todo">Todo</a>
                 </div>
                 <div class="navbar-nav ms-auto">
-                    <a class="nav-link" href="#">Login</a>
-                    <a class="nav-link" href="#">Register</a>
+                    <a class="nav-link" href="/login">Login</a>
+                    <a class="nav-link" href="/register">Register</a>
                     <a class="nav-link" href="#">LogOut</a>
                 </div>
             </div>
         </div>
-        </div>
     </nav>
     <div class="contains contains-width contains-height">
         <form action="/new" method="post" class="todoForm">
-            <input autofocus type="text" placeholder="Add your new todo" name="content" class="form-control" required>
+            <input class="rounded" autofocus type="text" placeholder="Add your new todo" name="content" class="form-control" required>
             <button type="submit"><i class="fas fa-plus"></i></button>
         </form>
         <hr/>

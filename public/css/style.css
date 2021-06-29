@@ -4,6 +4,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
+    
 }
 
 ::selection {
@@ -13,11 +14,11 @@
 
 body {
     width: 100%;
-    height: 100%;
+    height: 100vh;
     min-width: 400px;
     /* overflow: hidden; */
     padding: 10px;
-    background: linear-gradient(to right, #68eacc 20%, #497be8 75%);
+    background: linear-gradient(to right, #68EACC 0%, #497BE8 100%);
 }
 
 .contains-height {
