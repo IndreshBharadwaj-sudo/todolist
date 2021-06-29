@@ -8,9 +8,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
-    <nav class="navbar sticky-top navbar-expand-lg   navbar-light bg-light">
+    <nav class="navbar sticky-top navbar-expand-lg navbar-light bg-light">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">Todo List</a>
+            <a class="navbar-brand" href="/">Todo List App</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
@@ -28,9 +28,8 @@
         </div>
     </nav>
     <div class="contains contains-width contains-height">
-        <header>Todo App</header>
         <form action="/" method="post" class="todoForm">
-            <input autofocus type="text" placeholder="Add your new todo" name="content" class="form-control">
+            <input autofocus type="text" placeholder="Add your new todo" name="content" class="form-control" required>
             <button type="submit"><i class="fas fa-plus"></i></button>
         </form>
         <hr/>
@@ -52,7 +51,7 @@
                                 <div class="modal-body">
                                     <form action="/edit/<%= details._id %>" method="POST">
                                         <div class="d-grid gap-2">
-                                            <input type="text" value="<%=details.content%>" class="w-100 form-control-lg" name="content" autofocus>
+                                            <input type="text" value="<%=details.content%>" class="w-100 form-control-lg" name="content" required>
                                             <hr/>
                                             <button class="w-100 btn btn-primary" type="submit">Confirm</button>
                                             <button type="button" class="w-100 btn btn-danger" data-bs-dismiss="modal">Cancel</button>
