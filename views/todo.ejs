@@ -33,8 +33,10 @@
             <button type="submit"><i class="fas fa-plus"></i></button>
         </form>
         <hr/>
+        <% let total_todos = 0 %>
         <div class="todoList">
             <% todoTasks.forEach(details => { %>
+            <% total_todos++ %>
             <div class="w-100 toast show" role="alert" aria-live="assertive" aria-atomic="true">
                 <div class="toast-header">
                     <!-- Button trigger modal for editing todo - start -->
@@ -78,7 +80,7 @@
             <% }) %>
         </div>
         <div class="footer">
-            <span>You have <span class="pendingTasks"></span> pending tasks</span>
+            <span>You have <%= total_todos %> pending tasks</span>
             <!-- Button trigger modal -->
             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#clear-all">
             Clear All
