@@ -12,9 +12,18 @@ app.set("view engine", "ejs");
 
 // to fetch all todos from the db
 app.get("/", async (req, res) => {
+    let total_todos = 0;
+    await TodoTask.countDocuments({}, function (err, count) {
+        if (err) {
+            console.log(err);
+            total_todos = 0;
+        } else {
+            total_todos = count;
+        }
+    });
     await TodoTask.find({}, (err, tasks) => {
         if (err) return res.status(500).send(err);
-        res.render("todo.ejs", { todoTasks: tasks });
+        res.render("todo.ejs", { todoTasks: tasks, total_todos });
     });
 });
 
