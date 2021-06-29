@@ -21,13 +21,7 @@ body {
 }
 
 .contains-height {
-    margin-top: 4%;
-}
-
-@media screen and (min-height: 600px) {
-    .contains-height {
-        margin-top: 6%;
-    }
+    margin-top: 3%;
 }
 
 @media screen and (min-height: 800px) {
