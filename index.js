@@ -11,16 +11,27 @@ const flash=require('connect-flash');
 const path=require('path');
 const catchAsync=require('./views/utils/catchasync');
 const ExpressError = require("./views/utils/expressError");
+const {isLoggedIn} = require('./middleware');
 
+const dbUrl='mongodb://localhost:27017/todo';
+mongoose.connect(dbUrl, {
+    useNewUrlParser: true,
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false
+});
 
-// to set e ejs as template engine
+const db = mongoose.connection;
+db.on("error", console.error.bind(console, "connection error:"));
+db.once("open", () => {
+    console.log("Database connected");
+});
+
 app.set("view engine", "ejs");
 
 app.set('views',path.join(__dirname,'views'));
-// for access public folder below cmd
-app.use("/static", express.static("public"));
-// Urlencoded will allow us to extract the data from the form by adding her to the body property of the request.
 
+app.use("/static", express.static("public"));
 
 app.use(express.urlencoded({ extended: true }));
 
@@ -34,9 +45,12 @@ const sessionConfig={
         maxAge:1000*60*60*24*7
     }
 }
-app.use(flash());
-app.use(session(sessionConfig));
 app.use(cookieParser('thisismysecret'));
+app.use(session(sessionConfig));
+app.use(flash());
+
+//for login and register basically passport uses
+
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
@@ -45,21 +59,52 @@ passport.deserializeUser(User.deserializeUser());
 
 
 app.use((req,res,next)=>{
+    res.locals.currentUser = req.user;
     res.locals.success=req.flash('success');
     res.locals.error=req.flash('error');
     next();
 })
 
+
+//home router
 app.get('/',(req,res)=>{
     res.render('todo/home');
 })
 
-// to fetch all todos from the db
-app.get("/todo", catchAsync(async (req, res) => {
-    if(!req.isAuthenticated())
-    {
-        res.redirect('/login');
+// login route
+app.get('/login', (req, res) => {
+    res.render('user/login');
+})
+
+// login post route for authentication
+app.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}) ,(req,res)=>{
+    req.flash('success',`Welcome to TodoList`);
+    res.redirect('/todo');
+})
+
+
+//Register route
+app.get('/register',(req,res)=>{
+    res.render('user/register');
+})
+
+
+//registering a user
+app.post('/register',catchAsync(async(req,res)=>{
+    try{
+        const {email,username,password}=req.body;
+        const user=new User({email,username});
+        const regUser= await User.register(user,password); 
+        req.flash('success','Welcome to TodoList');
+        res.redirect('/todo');
     }
+    catch(e){
+        req.flash('error',e.message);
+        res.redirect('/register');
+    }
+}))
+// to fetch all todos from the db
+app.get("/todo", isLoggedIn, catchAsync(async (req, res) => {
     let total_todos = 0;
     await TodoTask.countDocuments({}, function (err, count) {
         if (err) {
@@ -76,7 +121,7 @@ app.get("/todo", catchAsync(async (req, res) => {
 }));
 
 //create a new todo
-app.post("/new", catchAsync(async (req, res) => {
+app.post("/new", isLoggedIn, catchAsync(async (req, res) => {
     const content=req.body.content;
     if(content.trim()!=0)
     {
@@ -95,7 +140,7 @@ app.post("/new", catchAsync(async (req, res) => {
 }));
 
 //update the existing todo
-app.post("/edit/:id", catchAsync(async (req, res) => {
+app.post("/edit/:id", isLoggedIn,catchAsync(async (req, res) => {
     const id = req.params.id;
     await TodoTask.findByIdAndUpdate(
         id,
@@ -108,7 +153,7 @@ app.post("/edit/:id", catchAsync(async (req, res) => {
 }));
 
 //remove a todo if exists
-app.get("/remove/:id", catchAsync(async (req, res) => {
+app.get("/remove/:id",isLoggedIn, catchAsync(async (req, res) => {
     const id = req.params.id;
     await TodoTask.findByIdAndRemove(id, (err) => {
         if (err) return res.status(500).send(err);
@@ -117,46 +162,28 @@ app.get("/remove/:id", catchAsync(async (req, res) => {
 }));
 
 //remove all todos
-app.post("/removeall",catchAsync( async (req, res) => {
+app.post("/removeall",isLoggedIn,catchAsync( async (req, res) => {
     await TodoTask.deleteMany({});
     res.redirect("/todo");
 }));
 
-app.get('/login', (req, res) => {
-    const { username = 'Rahul' } = req.query;
-    req.session.username = username;
-    res.render('user/login');
-})
-app.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}) ,(req,res)=>{
-    res.redirect('/todo');
+app.get('/logout',isLoggedIn,(req,res)=>{
+    req.logout();
+    req.flash('success','Logged out');
+    res.redirect('/');
 })
 
-app.get('/register',(req,res)=>{
-    res.render('user/register');
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page Not Found', 404))
 })
 
-app.post('/register',catchAsync(async(req,res)=>{
-    try{
-        const {email,username,password}=req.body;
-        const user=new User({email,username});
-        const regUser= await User.register(user,password); 
-        res.redirect('/todo');
-    }
-    catch(e){
-        req.flash('error',e.message);
-        res.redirect('/register');
-    }
-}))
-
-//connection to db
-mongoose.set("useFindAndModify", false);
-mongoose.set("useUnifiedTopology", true);
-mongoose.connect(
-    "mongodb://localhost:27017/todo",
-    { useNewUrlParser: true },
-    () => {
-        console.log("Connected to db!");
-        const port = 3000;
-        app.listen(port, () => console.log(`Server Up and running on ${port}`));
-    }
-);
+app.use((err, req, res, next) => {
+    const { statusCode = 500 } = err;
+    if (!err.message) err.message = 'Oh No, Something Went Wrong!'
+    res.status(statusCode).render('error', { err })
+})
+const port =3000;
+app.listen(port, () => {
+    console.log(`serving on port ${port}`)
+})
