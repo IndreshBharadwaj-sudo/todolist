@@ -1,3 +1,7 @@
+if (process.env.NODE_ENV !== "production") {
+    require('dotenv').config();
+}
+
 const express = require("express");
 const app = express();
 const TodoTask = require("./models/task");
@@ -13,7 +17,7 @@ const catchAsync=require('./views/utils/catchasync');
 const ExpressError = require("./views/utils/expressError");
 const {isLoggedIn} = require('./middleware');
 
-const dbUrl='mongodb://localhost:27017/todo';
+const dbUrl = process.env.DB_URL || 'mongodb://localhost:27017/todo';
 mongoose.connect(dbUrl, {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -72,13 +76,14 @@ app.get('/',(req,res)=>{
 })
 
 // login route
-app.get('/login', (req, res) => {
-    res.render('user/login');
+app.get('/signin', (req, res) => {
+    res.render('user/signin');
 })
 
 // login post route for authentication
-app.post('/login',passport.authenticate('local',{failureFlash:true, failureRedirect:'/login'}) ,(req,res)=>{
-    req.flash('success',`Welcome to TodoList`);
+app.post('/signin',passport.authenticate('local',{failureFlash:true, failureRedirect:'/signin'}) ,(req,res)=>{
+    const username=req.user.username.toUpperCase();
+    req.flash('success',`Welcome  ${username}`);
     const redirectUrl=req.session.returnTo || '/todo';
     delete req.session.returnTo;
     res.redirect('/todo');
@@ -86,13 +91,13 @@ app.post('/login',passport.authenticate('local',{failureFlash:true, failureRedir
 
 
 //Register route
-app.get('/register',(req,res)=>{
-    res.render('user/register');
+app.get('/signup',(req,res)=>{
+    res.render('user/signup');
 })
 
 
 //registering a user
-app.post('/register',catchAsync(async(req,res,next)=>{
+app.post('/signup',catchAsync(async(req,res,next)=>{
     try{
         const {email,username,password}=req.body;
         const user=new User({email,username});
@@ -105,7 +110,7 @@ app.post('/register',catchAsync(async(req,res,next)=>{
     }
     catch(e){
         req.flash('error',e.message);
-        res.redirect('/register');
+        res.redirect('/signin');
     }
 }))
 // to fetch all todos from the db
@@ -177,7 +182,7 @@ app.post("/removeall",isLoggedIn,catchAsync( async (req, res) => {
     res.redirect("/todo");
 }));
 
-app.get('/logout',isLoggedIn,(req,res)=>{
+app.get('/signout',isLoggedIn,(req,res)=>{
     req.logout();
     req.flash('success','Logged out');
     res.redirect('/');
@@ -193,7 +198,7 @@ app.use((err, req, res, next) => {
     if (!err.message) err.message = 'Oh No, Something Went Wrong!'
     res.status(statusCode).render('error', { err })
 })
-const port =3000;
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
     console.log(`serving on port ${port}`)
 })
