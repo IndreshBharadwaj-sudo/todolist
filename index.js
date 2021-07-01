@@ -111,7 +111,8 @@ app.post('/register',catchAsync(async(req,res,next)=>{
 // to fetch all todos from the db
 app.get("/todo", isLoggedIn, catchAsync(async (req, res) => {
     let total_todos = 0;
-    await TodoTask.countDocuments({}, function (err, count) {
+    const username=req.user.username;
+    await TodoTask.countDocuments({author:username}, function (err, count) {
         if (err) {
             console.log(err);
             total_todos = 0;
@@ -119,8 +120,9 @@ app.get("/todo", isLoggedIn, catchAsync(async (req, res) => {
             total_todos = count;
         }
     });
-    await TodoTask.find({}, (err, tasks) => {
+    await TodoTask.find({author:username}, (err, tasks) => {
         if (err) return res.status(500).send(err);
+        
         res.render("todo/todo.ejs", { todoTasks: tasks, total_todos });
     });
 }));
@@ -128,9 +130,11 @@ app.get("/todo", isLoggedIn, catchAsync(async (req, res) => {
 //create a new todo
 app.post("/new", isLoggedIn, catchAsync(async (req, res) => {
     const content=req.body.content;
+    const author=req.user.username;
     if(content.trim()!=0)
     {
         const todoTask = new TodoTask({
+            author,
             content
         });
         try {
@@ -168,7 +172,8 @@ app.get("/remove/:id",isLoggedIn, catchAsync(async (req, res) => {
 
 //remove all todos
 app.post("/removeall",isLoggedIn,catchAsync( async (req, res) => {
-    await TodoTask.deleteMany({});
+    const author=req.user.username;
+    await TodoTask.deleteMany({author});
     res.redirect("/todo");
 }));
 
