@@ -18,7 +18,7 @@ body {
     min-width: 400px;
     /* overflow: hidden; */
     padding: 10px;
-    background: linear-gradient(to right, #68EACC 50%, #497BE8 100%);
+    background: linear-gradient(to right, #68EACC 40%, #497BE8 100%);
 }
 
 .contains-height {
