@@ -8,8 +8,8 @@
 }
 
 ::selection {
-    color: #ffff;
-    background: rgb(142, 73, 232);
+    color: #fff5ff;
+    background: rgb(161, 40, 234);
 }
 
 body {
@@ -18,7 +18,7 @@ body {
     min-width: 400px;
     /* overflow: hidden; */
     padding: 10px;
-    background: linear-gradient(to right, #68EACC 40%, #497BE8 100%);
+    background: linear-gradient(to right, #68eacf 40%, #497BE8 100%);
 }
 
 .contains-height {
