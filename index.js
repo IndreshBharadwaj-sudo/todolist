@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const cookieParser = require('cookie-parser');
 const session = require('express-session');
 const passport = require('passport');
+const p=3;
 const LocalStrategy = require('passport-local');
 const User = require('./models/user');
 const flash=require('connect-flash');
